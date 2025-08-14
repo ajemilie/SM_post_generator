@@ -75,33 +75,3 @@ export default function Home() {
         >
           {loading ? "Genererer..." : "AI-generér tekst fra billede"}
         </button>
-      </div>
-
-      <div>
-        <button onClick={handleRandom} disabled={mediaFiles.length === 0}>
-          Vælg tilfældigt billede/video
-        </button>
-      </div>
-
-      {selectedMedia && (
-        <div style={{ marginTop: 20 }}>
-          <h3>Preview:</h3>
-          {selectedMedia.type.startsWith("image") ? (
-            <img
-              src={URL.createObjectURL(selectedMedia)}
-              alt="preview"
-              style={{ maxWidth: 400, borderRadius: 12 }}
-            />
-          ) : (
-            <video
-              controls
-              style={{ maxWidth: 400, borderRadius: 12 }}
-              src={URL.createObjectURL(selectedMedia)}
-            />
-          )}
-          <p style={{ maxWidth: 400 }}>{postText}</p>
-        </div>
-      )}
-    </div>
-  );
-}
