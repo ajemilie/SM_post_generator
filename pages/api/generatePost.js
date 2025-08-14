@@ -1,5 +1,3 @@
-// pages/api/generatePost.js
-
 export const config = {
   api: {
     bodyParser: { sizeLimit: '4mb' }, // så du kan uploade billeder op til 4MB
@@ -11,14 +9,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Kun POST er tilladt' });
   }
 
-  // Få billedet og prompt fra request
   const { imageBase64 } = req.body;
 
   if (!imageBase64) {
     return res.status(400).json({ error: 'Billede mangler' });
   }
 
-  // OpenAI API-kald
   const apiKey = process.env.OPENAI_API_KEY;
 
   try {
@@ -55,7 +51,6 @@ export default async function handler(req, res) {
 
     const data = await openaiRes.json();
 
-    // Find svaret
     const message = data.choices?.[0]?.message?.content || "Ingen tekst genereret.";
 
     res.status(200).json({ text: message });
