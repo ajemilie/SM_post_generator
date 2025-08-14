@@ -50,8 +50,9 @@ export default async function handler(req, res) {
     });
 
     const data = await openaiRes.json();
+    
+    const message = data.choices?.[0]?.message?.content || JSON.stringify(data);
 
-    const message = data.choices?.[0]?.message?.content || "Ingen tekst genereret.";
 
     res.status(200).json({ text: message });
   } catch (err) {
