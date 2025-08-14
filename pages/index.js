@@ -4,6 +4,7 @@ export default function Home() {
   const [mediaFiles, setMediaFiles] = useState([]);
   const [postText, setPostText] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   function handleUpload(e) {
     const files = Array.from(e.target.files);
@@ -21,6 +22,29 @@ export default function Home() {
   function handleCopy() {
     navigator.clipboard.writeText(`${postText}`);
     alert("Tekst kopieret til clipboard!");
+  }
+
+  async function generateAItext() {
+    if (!selectedMedia || !selectedMedia.type.startsWith("image")) {
+      alert("Vælg et billede for at bruge AI-generering.");
+      return;
+    }
+    setLoading(true);
+    // Læs billedet som base64
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const imageBase64 = reader.result;
+      const response = await fetch('/api/generatePost', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64 })
+      });
+      const data = await response.json();
+      if (data.text) setPostText(data.text);
+      else alert("Kunne ikke generere tekst.");
+      setLoading(false);
+    };
+    reader.readAsDataURL(selectedMedia);
   }
 
   return (
@@ -44,6 +68,13 @@ export default function Home() {
         />
         <br />
         <button onClick={handleCopy} style={{ marginTop: 10 }}>Kopier tekst</button>
+        <button
+          onClick={generateAItext}
+          style={{ marginLeft: 10 }}
+          disabled={loading || !selectedMedia || !selectedMedia.type.startsWith("image")}
+        >
+          {loading ? "Genererer..." : "AI-generér tekst fra billede"}
+        </button>
       </div>
 
       <div>
